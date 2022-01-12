@@ -12,6 +12,16 @@
 #define PIN_D7 48
 int dataPin[] = {PIN_D0, PIN_D1, PIN_D2, PIN_D3, PIN_D4, PIN_D5, PIN_D6, PIN_D7};
 
+#define ROW_0 A12
+#define ROW_1 A11
+#define ROW_2 A10
+#define ROW_3 A9
+#define ROW_4 A8
+#define ROW_5 A7
+#define ROW_6 A6
+#define ROW_7 A5
+int rowPin[] = {ROW_0, ROW_1, ROW_2, ROW_3, ROW_4, ROW_5, ROW_6, ROW_7};
+
 #define PIN_LD_ADDR 49
 
 #define PIN_EN_DEMUX_1 A0
@@ -27,22 +37,25 @@ int dataPin[] = {PIN_D0, PIN_D1, PIN_D2, PIN_D3, PIN_D4, PIN_D5, PIN_D6, PIN_D7}
 
 #include <string.h>
 
-
 /* Custom functions */
 void setData(unsigned char addr){
   for(int i = 0; i < 8; i++)
     digitalWrite(dataPin[i], (addr >> i) & 1);
 }
 
+void setRow(unsigned char row, unsigned char level){
+  digitalWrite(rowPin[row], level);
+}
+
+void loadAddr(){
+  digitalWrite(PIN_LD_ADDR, 1);
+  delayMicroseconds(10);
+  digitalWrite(PIN_LD_ADDR, 0);
+}
+
 void setMatrixData(int matrix, unsigned char addr, unsigned char data){
   setData( (1 << 7) | ( ((5 + matrix) << 3) & 0b111000 ) | (addr & 0b111) );
-  
-  digitalWrite(PIN_LD_ADDR, 1);
-  digitalWrite(PIN_LD_ADDR, 0);
-  
-  digitalWrite(PIN_EN_DEMUX_1, 0);
-  digitalWrite(PIN_EN_DEMUX_2, 1);
-  
+  loadAddr();
   digitalWrite(PIN_WR, 0);
   setData(data);
   digitalWrite(PIN_WR, 1);
@@ -72,23 +85,15 @@ void clearMatrix(int matrix){
     setBrightness(matrix, 3);
 }
 
-void fade(int inout){
-  for(int brightness = 3; brightness >= 0; brightness--){
-    for(int matrix = 0; matrix < 3; matrix++){
-      if(inout){
-        setBrightness(matrix, 3 - brightness);
-      }else{
-        setBrightness(matrix, brightness);  
-      };    
-    }
-    delay(50);
-  }
-}
-
-
 void displayTime(unsigned char hour, unsigned char minutes, unsigned char seconds){
   char text[12];
   sprintf(text, "  %02d:%02d:%02d  ", hour, minutes, seconds);
+  setString(text);
+}
+
+void displayTeufe(float teufe){
+  char text[12];
+  sprintf(text, "+%6d.%02d m", (int)teufe, (int)(teufe*100)%100); 
   setString(text);
 }
 
@@ -114,22 +119,25 @@ void setup(){
   pinMode(PIN_EN_DEMUX_1, OUTPUT);
   pinMode(PIN_EN_DEMUX_2, OUTPUT);
   
+  digitalWrite(PIN_EN_DEMUX_1, 0);
+  digitalWrite(PIN_EN_DEMUX_2, 1);
+  
   // Set WR Prin Dir
   pinMode(PIN_WR, OUTPUT);
   digitalWrite(PIN_WR, 1);
-  
+    
+
+  // Init Matrix Displays
   setBrightness(1, 3);
   setBrightness(2, 3);
   setBrightness(3, 3);
   
   for(int i = 0; i < 3; i++)
     clearMatrix(i);
+    
   
 }
 
 void loop(){
-  for(int i = 0; i < 60; i++){
-    displayTime(12, 13, i);
-    delay(1000);
-  }
+  displayTime(1,2, 3);
 }
