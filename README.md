@@ -1,7 +1,4 @@
----
-layout: post
-title: "Teufenzeiger"
----
+# Teufenzeiger
 This project was an interesting dive into old-fashioned electronics design. I had a lot of fun reverse engineering this device and now have a slightly too large weather station in my room.
 
 ## Introduction
@@ -22,6 +19,6 @@ But upon closer inspection of the PCB, I discovered that an isolated current loo
 ### Communication
 Since the device was build around a microcontroller from the 80s, an 8-bit parallel bus is used to interface with all components. This 8-bit parallel bus selects behaves as a "chip select" signal, as well as a data line for writing data to all components. Other signals like address signals or nCS signals are generated via multiple latches, controlled by the MCU. The general architecture of the device is depicted below.
 
-<img src="/assets/tz_com.png" alt="Architecture of the Teufenzeiger" style="width: 50%; display: block; margin-left: auto; margin-right: auto;"/>
+<img src="/doc/tz_com.png" alt="Architecture of the Teufenzeiger" style="width: 50%; display: block; margin-left: auto; margin-right: auto;"/>
 
 
