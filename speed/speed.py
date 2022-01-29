@@ -1,4 +1,4 @@
-from PIL import Image
+import PIL.Image
 from scipy import signal
 from scipy.fft import fftshift
 import matplotlib.pyplot as plt
@@ -11,7 +11,7 @@ px_val = []
 while True:
     # Load images until file error
     try:
-        im = Image.open("seq/out_" + str(index) + ".png").convert("L")
+        im = PIL.Image.open("seq/out_" + str(index) + ".png").convert("L")
         index = index + 1
     except IOError:
         # Sample frequency of 25 fps
@@ -29,6 +29,7 @@ while True:
         exit()
 
     # Get pixel value
-    px_val.append(im.getpixel((64, 29)))
+    img = im.crop((400, 100, 1000, 400))
+    px_val.append(np.mean(img))
 
 
