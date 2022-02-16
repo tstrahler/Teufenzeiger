@@ -19,6 +19,6 @@ But upon closer inspection of the PCB, I discovered that an isolated current loo
 ### Communication
 Since the device was build around a microcontroller from the 80s, an 8-bit parallel bus is used to interface with all components. This 8-bit parallel bus selects behaves as a "chip select" signal, as well as a data line for writing data to all components. Other signals like address signals or nCS signals are generated via multiple latches, controlled by the MCU. The general architecture of the device is depicted below.
 
-![Architecture of the Teufenzeiger](/doc/tz_com.png)
+![Architecture of the Teufenzeiger](doc/img/tz_com.png)
 
 
